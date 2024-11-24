@@ -23,13 +23,14 @@ GEM
     rspec-support (3.13.1)
 
 PLATFORMS
+  arm64-darwin-23
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.17)
+  bundler (~> 2.5)
   cronv-rb!
   rake (~> 10.0)
-  rspec (~> 3.0)
+  rspec
 
 BUNDLED WITH
-   1.17.2
+   2.5.11

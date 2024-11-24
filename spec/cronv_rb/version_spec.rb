@@ -1,9 +1,7 @@
-RSpec.describe CronvRb::Version do
-  it "has a version number" do
-    expect(Cronv::Rb::VERSION).not_to be nil
-  end
+require "spec_helper"
 
-  it "does something useful" do
-    expect(false).to eq(true)
+RSpec.describe CronvRb do
+  it "has a version number" do
+    expect(CronvRb::VERSION).not_to be nil
   end
 end

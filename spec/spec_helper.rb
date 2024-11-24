@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "cronv/rb"
+require "cronv_rb/version"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
