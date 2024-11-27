@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'cronv_rb/version'
 require 'cronv_rb/option'
