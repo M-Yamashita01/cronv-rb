@@ -10,6 +10,7 @@ GEM
     diff-lcs (1.5.1)
     json (2.8.2)
     language_server-protocol (3.17.0.3)
+    logger (1.6.1)
     parallel (1.26.3)
     parser (3.3.6.0)
       ast (~> 2.4.1)
@@ -53,8 +54,9 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.5)
   cronv-rb!
+  logger
   rake (~> 10.0)
-  rspec
+  rspec (~> 3.0)
   rubocop
 
 BUNDLED WITH
