@@ -1,4 +1,6 @@
-require "cronv/rb/version"
+# frozen_string_literal: true
+
+require 'cronv/rb/version'
 
 module CronvRb
   class Error < StandardError; end
