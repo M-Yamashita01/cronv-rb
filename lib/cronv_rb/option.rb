@@ -28,14 +28,5 @@ module CronvRb
       @title = OPT_DEFAULT_TITLE
       @width = OPT_DEFAULT_WIDTH
     end
-
-    def to_from_time
-      "#{@from_date} #{@from_time}"
-    end
-
-    def self.new_cronv_option(now)
-      utc_now = now.utc
-      new(utc_now.strftime(OPT_DATE_FORMAT), utc_now.strftime(OPT_TIME_FORMAT))
-    end
   end
 end
