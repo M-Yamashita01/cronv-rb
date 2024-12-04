@@ -3,3 +3,6 @@ Style/Documentation:
 
 Layout/LineLength:
   Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
