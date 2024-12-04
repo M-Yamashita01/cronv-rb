@@ -13,6 +13,28 @@ module CronvRb
       "#{@from_date} #{@from_time}"
     end
 
+    def to_duration_minutes
+      if @duration.length < 2
+        Logger.error("invalid duration format: #{duration}")
+        return 0
+      end
+
+      duration_i = @duration.chop.to_i
+      unit = @duration.chars.last
+
+      case unit
+      when 'd'
+        duration_i * 24 * 60
+      when 'h'
+        duration_i * 60
+      when 'm'
+        duration_i
+      else
+        Logger.error("invalid duration format: #{@duration}, '#{unit}' is not in d/h/m")
+        0
+      end
+    end
+
     def self.new_cronv_option(now)
       utc_now = now.utc
       new(utc_now.strftime(OPT_DATE_FORMAT), utc_now.strftime(OPT_TIME_FORMAT))
