@@ -10,7 +10,10 @@ module CronvRb
     OPT_DEFAULT_WIDTH = 100
 
     def to_from_time
-      "#{@from_date} #{@from_time}"
+      parsed = Time.strptime("#{@from_date} #{@from_time}", "#{OPT_DATE_FORMAT} #{OPT_TIME_FORMAT}")
+      Time.utc(parsed.year, parsed.month, parsed.day, parsed.hour, parsed.min, 0)
+    rescue ArgumentError => e
+      raise ArgumentError, "invalid date/time format: '#{@from_date} #{@from_time}', #{e.message}"
     end
 
     def to_duration_minutes
