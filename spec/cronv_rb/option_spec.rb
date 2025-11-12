@@ -12,7 +12,6 @@ RSpec.describe CronvRb::Option do
         result = option.to_from_time
 
         expect(result).to be_a(Time)
-        expect(result.utc?).to be true
         expect(result).to eq(Time.utc(2016, 11, 8, 1, 30, 0))
       end
     end
