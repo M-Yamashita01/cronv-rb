@@ -4,11 +4,16 @@ require 'spec_helper'
 
 RSpec.describe CronvRb::Option do
   describe '#to_from_time' do
-    let(:now) { Time.new(2024, 11, 25, 13, 30, 0, '+09:00') } # => 2008-06-21 13:30:00 +0900
+    context 'with valid date and time' do
+      it 'returns parsed Time object in UTC' do
+        now = Time.new(2016, 11, 8, 1, 30, 0, 0)
+        option = CronvRb::Option.new_cronv_option(now)
 
-    it 'should return formatted from date and time' do
-      option = CronvRb::Option.new_cronv_option(now)
-      expect(option.to_from_time).to eq('2024/11/25 04:30')
+        result = option.to_from_time
+
+        expect(result).to be_a(Time)
+        expect(result).to eq(Time.utc(2016, 11, 8, 1, 30, 0))
+      end
     end
   end
 

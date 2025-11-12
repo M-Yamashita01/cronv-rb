@@ -9,7 +9,7 @@ module CronvRb
       def new_visualizer(option)
         time_from = option.to_from_time
         duration_minutes = option.to_duration_minutes
-        time_to = (Time.parse(time_from) + duration_minutes * 60).strftime('%Y/%m/%d %H:%M')
+        time_to = time_from + duration_minutes * 60
 
         new(option, time_from, time_to, duration_minutes)
       end
