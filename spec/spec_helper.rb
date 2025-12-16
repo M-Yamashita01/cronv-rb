@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'cronv_rb/version'
-require 'cronv_rb/option'
-require 'cronv_rb/visualizer'
-require 'cronv_rb/schedule'
+require 'cronv_rb'
 
 RSpec.configure do |config|
   ENV['TZ'] = 'UTC'
