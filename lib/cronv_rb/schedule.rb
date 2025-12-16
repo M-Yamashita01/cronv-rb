@@ -2,6 +2,8 @@
 
 module CronvRb
   class Schedule
+    attr_reader :minutes, :hour, :day_of_month, :month, :day_of_week, :year
+
     # rubocop:disable Metrics/ParameterLists
     def initialize(minutes, hour, day_of_month, month, day_of_week, year, schedule_alias)
       @minutes = minutes
