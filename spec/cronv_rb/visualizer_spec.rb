@@ -10,8 +10,13 @@ RSpec.describe CronvRb::Visualizer do
       option = CronvRb::Option.new_cronv_option(now)
       visualizer = CronvRb::Visualizer.new_visualizer(option)
 
-      expect(visualizer.instance_variable_get(:@time_from).to_s).to eq('2024-11-25 04:30:00 +0000')
-      expect(visualizer.instance_variable_get(:@time_to).to_s).to eq('2024-11-25 10:30:00 +0000')
+      time_from = visualizer.instance_variable_get(:@time_from)
+      time_to = visualizer.instance_variable_get(:@time_to)
+
+      expect(time_from).to be_a(Time)
+      expect(time_from).to eq(Time.utc(2024, 11, 25, 4, 30, 0))
+      expect(time_to).to be_a(Time)
+      expect(time_to).to eq(Time.utc(2024, 11, 25, 10, 30, 0))
     end
   end
 end
