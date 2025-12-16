@@ -10,30 +10,33 @@ module CronvRb
     OPT_DEFAULT_WIDTH = 100
 
     def to_from_time
-      Time.strptime("#{@from_date} #{@from_time}", "#{OPT_DATE_FORMAT} #{OPT_TIME_FORMAT}")
+      parsed = Time.strptime("#{@from_date} #{@from_time}", "#{OPT_DATE_FORMAT} #{OPT_TIME_FORMAT}")
+      Time.utc(parsed.year, parsed.month, parsed.day, parsed.hour, parsed.min, 0)
     rescue ArgumentError => e
       raise ArgumentError, "invalid date/time format: '#{@from_date} #{@from_time}', #{e.message}"
     end
 
     def to_duration_minutes
-      if @duration.length < 2
-        Logger.error("invalid duration format: #{duration}")
-        return 0
+      raise ArgumentError, "invalid duration format: '#{@duration}'" if @duration.length < 2
+
+      duration_str = @duration[0..-2]
+      unit = @duration[-1]
+
+      begin
+        duration_i = Integer(duration_str)
+      rescue ArgumentError => e
+        raise ArgumentError, "invalid duration format: '#{@duration}', #{e.message}"
       end
 
-      duration_i = @duration.chop.to_i
-      unit = @duration.chars.last
-
-      case unit
+      case unit.downcase
       when 'd'
-        duration_i * 24 * 60
+        Float(duration_i * 24 * 60)
       when 'h'
-        duration_i * 60
+        Float(duration_i * 60)
       when 'm'
-        duration_i
+        Float(duration_i)
       else
-        Logger.error("invalid duration format: #{@duration}, '#{unit}' is not in d/h/m")
-        0
+        raise ArgumentError, "invalid duration format: '#{@duration}', '#{unit}' is not in d/h/m"
       end
     end
 
