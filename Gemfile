@@ -10,3 +10,4 @@ gemspec
 gem 'logger'
 gem 'rspec', '~> 3.0'
 gem 'rubocop'
+gem 'rubocop-rspec'
