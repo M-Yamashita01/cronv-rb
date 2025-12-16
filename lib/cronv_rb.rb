@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'cronv/rb/version'
+Dir[File.join(__dir__, 'cronv_rb', '*.rb')].each do |file|
+  require "cronv_rb/#{File.basename(file, '.rb')}"
+end
 
 ENV['TZ'] = 'UTC'
 
