@@ -39,7 +39,6 @@ module CronvRb
               job: parts[1..].join(' ')
             )
           end
-
         else
           if parts.length < 5
             # TODO: メッセージの改善
@@ -48,13 +47,13 @@ module CronvRb
           end
 
           schedule = Schedule.new(
-            parts[0],
-            parts[1],
-            parts[2],
-            parts[3],
-            parts[4],
-            nil,
-            nil
+            minutes: parts[0],
+            hour: parts[1],
+            day_of_month: parts[2],
+            month: parts[3],
+            day_of_week: parts[4],
+            year: nil,
+            schedule_alias: nil
           )
 
           job = parts[5..].join(' ')
