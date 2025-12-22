@@ -39,6 +39,22 @@ module CronvRb
               job: parts[1..].join(' ')
             )
           end
+
+          schedule = Schedule.new(
+            minutes: nil,
+            hour: nil,
+            day_of_month: nil,
+            month: nil,
+            day_of_week: nil,
+            year: nil,
+            schedule_alias: parts[0]
+          )
+
+          return Crontab.new(
+            line: line,
+            schedule: schedule,
+            job: parts[1..].join(' ')
+          )
         else
           if parts.length < 5
             # TODO: メッセージの改善

@@ -65,5 +65,29 @@ RSpec.describe CronvRb::Crontab do
         expect(crontab.job).to eq('/usr/bin/somecommand arg1 arg2')
       end
     end
+
+    context 'when the line is has @reboot label' do
+      let(:line) { '@reboot /usr/bin/somecommand' }
+
+      it 'should return a Extra object' do
+        extra = described_class.parse(line)
+        expect(extra).to be_a(CronvRb::Extra)
+        expect(extra.line).to eq(line)
+        expect(extra.label).to eq('@reboot')
+        expect(extra.job).to eq('/usr/bin/somecommand')
+      end
+    end
+
+    context 'when the line is has @hourly label' do
+      let(:line) { '@hourly /usr/bin/somecommand' }
+
+      it 'should return a Crontab object' do
+        crontab = described_class.parse(line)
+        expect(crontab).to be_a(CronvRb::Crontab)
+        expect(crontab.line).to eq(line)
+        expect(crontab.schedule.schedule_alias).to eq('@hourly')
+        expect(crontab.job).to eq('/usr/bin/somecommand')
+      end
+    end
   end
 end
