@@ -21,6 +21,9 @@ module CronvRb
     end
 
     class << self
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Lint/UnusedMethodArgument
+      # rubocop:disable Style/OptionalArguments
       def parse(context = {}, line)
         parts = line.split(' ')
         schedule = nil
@@ -81,6 +84,9 @@ module CronvRb
         )
       end
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Lint/UnusedMethodArgument
+    # rubocop:enable Style/OptionalArguments
 
     def running_every_minutes?(schedule)
       return true if schedule.minutes == '*' || schedule.minutes == '*/1'
