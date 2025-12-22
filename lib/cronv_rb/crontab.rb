@@ -28,7 +28,7 @@ module CronvRb
 
         if parts[0].start_with?('@')
           if parts.length < 2
-            # TODO: raise error
+            Logger.error("invalid crontab line: '#{line}'")
             return nil
           end
 
@@ -57,7 +57,6 @@ module CronvRb
           )
         else
           if parts.length < 5
-            # TODO: メッセージの改善
             Logger.error("invalid crontab line: '#{line}'")
             return nil
           end
