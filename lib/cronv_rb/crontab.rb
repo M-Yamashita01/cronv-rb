@@ -24,23 +24,22 @@ module CronvRb
       # rubocop:disable Metrics/AbcSize
       # rubocop:disable Lint/UnusedMethodArgument
       # rubocop:disable Style/OptionalArguments
+      # return [crontab, extra]
       def parse(context = {}, line)
         parts = line.split(' ')
         schedule = nil
         job = []
 
         if parts[0].start_with?('@')
-          if parts.length < 2
-            Logger.error("invalid crontab line: '#{line}'")
-            return nil
-          end
+          raise ArgumentError, "invalid crontab line: '#{line}'" if parts.length < 2
 
           if parts[0] == '@reboot'
-            return Extra.new(
-              line: line,
-              label: parts[0],
-              job: parts[1..].join(' ')
-            )
+            return [nil,
+                    Extra.new(
+                      line: line,
+                      label: parts[0],
+                      job: parts[1..].join(' ')
+                    )]
           end
 
           schedule = Schedule.new(
@@ -53,16 +52,13 @@ module CronvRb
             schedule_alias: parts[0]
           )
 
-          return Crontab.new(
+          return [Crontab.new(
             line: line,
             schedule: schedule,
             job: parts[1..].join(' ')
-          )
+          ), nil]
         else
-          if parts.length < 5
-            Logger.error("invalid crontab line: '#{line}'")
-            return nil
-          end
+          raise ArgumentError, "invalid crontab line: '#{line}'" if parts.length < 5
 
           schedule = Schedule.new(
             minutes: parts[0],
@@ -77,11 +73,11 @@ module CronvRb
           job = parts[5..].join(' ')
         end
 
-        Crontab.new(
+        [Crontab.new(
           line: line,
           schedule: schedule,
           job: job
-        )
+        ), nil]
       end
     end
     # rubocop:enable Metrics/AbcSize
