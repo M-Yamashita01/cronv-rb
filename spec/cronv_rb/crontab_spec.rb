@@ -36,7 +36,7 @@ RSpec.describe CronvRb::Crontab do
       let(:line) { '0 0 * * * /usr/bin/somecommand' }
 
       it 'should return a Crontab object' do
-        crontab = described_class.parse(line)
+        crontab, extra = described_class.parse(line)
         expect(crontab).to be_a(CronvRb::Crontab)
         expect(crontab.line).to eq(line)
         expect(crontab.schedule.minutes).to eq('0')
@@ -47,6 +47,7 @@ RSpec.describe CronvRb::Crontab do
         expect(crontab.schedule.year).to be_nil
         expect(crontab.schedule.schedule_alias).to be_nil
         expect(crontab.job).to eq('/usr/bin/somecommand')
+        expect(extra).to be_nil
       end
     end
 
@@ -54,7 +55,7 @@ RSpec.describe CronvRb::Crontab do
       let(:line) { '0 0 * * * /usr/bin/somecommand arg1 arg2' }
 
       it 'should return a Crontab object' do
-        crontab = described_class.parse(line)
+        crontab, extra = described_class.parse(line)
         expect(crontab.schedule.minutes).to eq('0')
         expect(crontab.schedule.hour).to eq('0')
         expect(crontab.schedule.day_of_month).to eq('*')
@@ -63,6 +64,7 @@ RSpec.describe CronvRb::Crontab do
         expect(crontab.schedule.year).to be_nil
         expect(crontab.schedule.schedule_alias).to be_nil
         expect(crontab.job).to eq('/usr/bin/somecommand arg1 arg2')
+        expect(extra).to be_nil
       end
     end
 
@@ -70,7 +72,8 @@ RSpec.describe CronvRb::Crontab do
       let(:line) { '@reboot /usr/bin/somecommand' }
 
       it 'should return a Extra object' do
-        extra = described_class.parse(line)
+        crontab, extra = described_class.parse(line)
+        expect(crontab).to be_nil
         expect(extra).to be_a(CronvRb::Extra)
         expect(extra.line).to eq(line)
         expect(extra.label).to eq('@reboot')
@@ -82,11 +85,12 @@ RSpec.describe CronvRb::Crontab do
       let(:line) { '@hourly /usr/bin/somecommand' }
 
       it 'should return a Crontab object' do
-        crontab = described_class.parse(line)
+        crontab, extra = described_class.parse(line)
         expect(crontab).to be_a(CronvRb::Crontab)
         expect(crontab.line).to eq(line)
         expect(crontab.schedule.schedule_alias).to eq('@hourly')
         expect(crontab.job).to eq('/usr/bin/somecommand')
+        expect(extra).to be_nil
       end
     end
   end
