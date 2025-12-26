@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+require 'debug'
 RSpec.describe CronvRb::Record do
   describe '.new_record' do
     it 'should return a Record object' do
@@ -12,6 +13,26 @@ RSpec.describe CronvRb::Record do
       expect(record.fugit_cron).to be_a(Fugit::Cron)
       expect(record.start_time).to be_a(Time)
       expect(record.duration_minutes).to eq(60)
+    end
+  end
+
+  describe '#iter' do
+    it 'should return an Enumerator' do
+      record = described_class.new_record(
+        line: '*/5 0 * * * /usr/bin/somecommand',
+        start_time: Time.new('2025-12-25 00:00:00'),
+        duration_minutes: 60
+      )
+      array = record.iter
+      expect(array.size).to eq 11
+
+      first_cron_schedule = array.first
+      expect(first_cron_schedule[:start].to_s.encode('UTF-8')).to eq '2025-12-25 00:05:00 +0000'
+      expect(first_cron_schedule[:end].to_s.encode('UTF-8')).to eq '2025-12-25 00:06:00 +0000'
+
+      last_cron_schedule = array.last
+      expect(last_cron_schedule[:start].to_s.encode('UTF-8')).to eq '2025-12-25 00:55:00 +0000'
+      expect(last_cron_schedule[:end].to_s.encode('UTF-8')).to eq '2025-12-25 00:56:00 +0000'
     end
   end
 end
