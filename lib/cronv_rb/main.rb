@@ -3,6 +3,7 @@
 require 'optparse'
 
 module CronvRb
+  # rubocop:disable Metrics/AbcSize
   def self.main
     option = Option.new_cronv_option(Time.now)
 
@@ -25,4 +26,5 @@ module CronvRb
     puts "[#{option.title}] #{visualizer.records.size} tasks."
     puts "[#{option.title}] '#{path}' generated."
   end
+  # rubocop:enable Metrics/AbcSize
 end
