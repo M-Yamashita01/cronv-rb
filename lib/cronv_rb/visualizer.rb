@@ -30,6 +30,11 @@ module CronvRb
       [true, nil]
     end
 
+    def dump
+      File.write(@option.output_file_path, Template.render(visualizer: self))
+      @option.output_file_path
+    end
+
     private
 
     def initialize(option, time_from, time_to, duration_minutes)
