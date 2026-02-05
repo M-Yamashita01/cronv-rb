@@ -9,7 +9,7 @@ module CronvRb
     OPT_DEFAULT_TITLE = 'Cron Tasks'
     OPT_DEFAULT_WIDTH = 100
 
-    attr_reader :output_file_path, :duration, :from_date, :from_time, :title, :width
+    attr_accessor :output_file_path, :duration, :from_date, :from_time, :title, :width
 
     def to_from_time
       parsed = Time.strptime("#{@from_date} #{@from_time}", "#{OPT_DATE_FORMAT} #{OPT_TIME_FORMAT}")
