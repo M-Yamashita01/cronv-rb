@@ -19,5 +19,14 @@ RSpec.describe CronvRb::Schedule do
         expect(schedule.to_crontab).to eq('01,31 04,05 1-15 1,6 1 2024')
       end
     end
+
+    context 'when the schedule uses an @alias' do
+      %w[@hourly @daily @weekly @monthly @yearly].each do |ali|
+        it "should return the alias '#{ali}' as-is" do
+          schedule = CronvRb::Schedule.new(minutes: nil, hour: nil, day_of_month: nil, month: nil, day_of_week: nil, year: nil, schedule_alias: ali)
+          expect(schedule.to_crontab).to eq(ali)
+        end
+      end
+    end
   end
 end

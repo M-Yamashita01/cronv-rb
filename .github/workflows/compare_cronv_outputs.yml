@@ -1,0 +1,57 @@
+name: Compare cronv-rb vs OSS cronv output
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install OSS cronv
+        run: go install github.com/takumakanari/cronv/cronv@0.4.5
+
+      - name: Generate OSS cronv HTML output
+        run: |
+          cat fixtures/sample.crontab \
+            | "$(go env GOPATH)/bin/cronv" \
+                -o oss_cronv.html \
+                --from-date 2025/01/01 \
+                --from-time 00:00 \
+                -d 1d
+
+      - name: Generate cronv-rb HTML output
+        run: |
+          cat fixtures/sample.crontab \
+            | bundle exec ruby exe/cronv \
+                -o cronvrb.html \
+                --from-date 2025/01/01 \
+                --from-time 00:00 \
+                -d 1d
+
+      - name: Compare outputs
+        run: bundle exec ruby scripts/compare_cronv_outputs.rb oss_cronv.html cronvrb.html
+
+      - name: Upload HTML outputs as artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cronv-html-outputs
+          path: |
+            oss_cronv.html
+            cronvrb.html

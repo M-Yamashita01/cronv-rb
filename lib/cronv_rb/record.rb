@@ -33,10 +33,12 @@ module CronvRb
       array = []
 
       end_time = @start_time + (@duration_minutes * 60)
-      # next_time.to_s example : "2024-06-02 00:00:00 +0900"
+      # next_time is an EtOrbi::EoTime; use .to_t (converts to plain Ruby Time)
+      # for comparison to avoid timezone label mismatches ("Z" vs "UTC") that
+      # cause string comparison to fail for executions at the exact end boundary.
       @next_time = @fugit_cron.next_time(@start_time.to_s)
 
-      while @next_time.to_s <= end_time.to_s
+      while @next_time.to_t <= end_time
         array.push({ start: @next_time.to_s, end: (@next_time + 60).to_s })
         @next_time = @fugit_cron.next_time(@next_time.to_s)
       end
