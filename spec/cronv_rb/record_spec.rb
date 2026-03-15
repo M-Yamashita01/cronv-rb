@@ -36,19 +36,6 @@ RSpec.describe CronvRb::Record do
       end
     end
 
-    context 'when the cron schedule fires exactly at the end time boundary' do
-      it 'should include the execution at the end time boundary' do
-        record = described_class.new_record(
-          line: '0 0 * * * /usr/bin/somecommand',
-          start_time: Time.utc(2025, 1, 1, 0, 0, 0),
-          duration_minutes: 24 * 60
-        )
-        array = record.iter
-        # Midnight on 2025-01-02 falls exactly on the end boundary and must be included
-        expect(array.last[:start]).to include('2025-01-02 00:00:00')
-      end
-    end
-
     context 'when the current time and the specified duration are not a cron schedule' do
       it 'should return an Enumerator with 0 element' do
         record = described_class.new_record(

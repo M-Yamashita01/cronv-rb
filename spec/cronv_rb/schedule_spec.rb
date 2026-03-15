@@ -21,10 +21,10 @@ RSpec.describe CronvRb::Schedule do
     end
 
     context 'when the schedule uses an @alias' do
-      %w[@hourly @daily @weekly @monthly @yearly].each do |ali|
-        it "should return the alias '#{ali}' as-is" do
-          schedule = CronvRb::Schedule.new(minutes: nil, hour: nil, day_of_month: nil, month: nil, day_of_week: nil, year: nil, schedule_alias: ali)
-          expect(schedule.to_crontab).to eq(ali)
+      %w[@hourly @daily @weekly @monthly @yearly].each do |schedule_alias|
+        it "should return the alias '#{schedule_alias}' as-is" do
+          schedule = CronvRb::Schedule.new(minutes: nil, hour: nil, day_of_month: nil, month: nil, day_of_week: nil, year: nil, schedule_alias: schedule_alias)
+          expect(schedule.to_crontab).to eq(schedule_alias)
         end
       end
     end
