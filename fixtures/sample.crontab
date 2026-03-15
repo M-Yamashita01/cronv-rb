@@ -1,0 +1,80 @@
+# Sample crontab for comparing output between cronv-rb and the OSS cronv
+# https://github.com/takumakanari/cronv
+
+# --- Basic examples ---
+
+# Every minute
+* * * * * /usr/local/bin/every_minute.sh
+
+# Every 5 minutes
+*/5 * * * * /usr/local/bin/every_5_minutes.sh
+
+# Every 10 minutes
+*/10 * * * * /usr/local/bin/every_10_minutes.sh
+
+# Every 15 minutes
+*/15 * * * * /usr/local/bin/every_15_minutes.sh
+
+# Every 30 minutes
+*/30 * * * * /usr/local/bin/every_30_minutes.sh
+
+# --- Hourly / Daily ---
+
+# Every hour at minute 0
+0 * * * * /usr/local/bin/hourly.sh
+
+# Every day at midnight
+0 0 * * * /usr/local/bin/daily_midnight.sh
+
+# Every day at noon
+0 12 * * * /usr/local/bin/daily_noon.sh
+
+# Every day at 6 AM and 6 PM
+0 6,18 * * * /usr/local/bin/twice_daily.sh
+
+# --- Weekly ---
+
+# Every Monday at 9 AM
+0 9 * * 1 /usr/local/bin/weekly_monday.sh
+
+# Every weekday (Mon-Fri) at 8 AM
+0 8 * * 1-5 /usr/local/bin/weekday_morning.sh
+
+# Every weekend (Sat-Sun) at 10 AM
+0 10 * * 6,0 /usr/local/bin/weekend_morning.sh
+
+# --- Monthly ---
+
+# First day of every month at midnight
+0 0 1 * * /usr/local/bin/monthly_first.sh
+
+# Last possible day check: 28th of every month at 2 AM
+0 2 28 * * /usr/local/bin/monthly_28th.sh
+
+# --- Specific months ---
+
+# Every day in January at midnight
+0 0 * 1 * /usr/local/bin/january_daily.sh
+
+# Every day in July and December at noon
+0 12 * 7,12 * /usr/local/bin/july_december_noon.sh
+
+# --- Step and range combinations ---
+
+# Every 2 hours
+0 */2 * * * /usr/local/bin/every_2_hours.sh
+
+# Every 3 hours between 6 AM and 21 PM
+0 6-21/3 * * * /usr/local/bin/daytime_every_3_hours.sh
+
+# Minutes 0, 15, 30, 45 of every hour
+0,15,30,45 * * * * /usr/local/bin/quarter_hour.sh
+
+# --- @ aliases ---
+
+@hourly /usr/local/bin/at_hourly.sh
+@daily /usr/local/bin/at_daily.sh
+@weekly /usr/local/bin/at_weekly.sh
+@monthly /usr/local/bin/at_monthly.sh
+@yearly /usr/local/bin/at_yearly.sh
+@reboot /usr/local/bin/at_reboot.sh
