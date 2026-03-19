@@ -7,8 +7,6 @@
 # Usage:
 #   ruby scripts/compare_cronv_outputs.rb <oss_cronv.html> <cronvrb.html>
 
-require 'set'
-
 def usage
   "Usage: #{$PROGRAM_NAME} <oss_cronv.html> <cronvrb.html>"
 end
@@ -24,7 +22,7 @@ abort "File not found: #{rb_path}" unless File.exist?(rb_path)
 # Returns an array of { label:, job: } hashes.
 def parse_extras(html)
   extras = []
-  html.scan(/<dt[^>]*>(.*?)<\/dt>\s*<dd[^>]*>(.*?)<\/dd>/m) do |label, command|
+  html.scan(%r{<dt[^>]*>(.*?)</dt>\s*<dd[^>]*>(.*?)</dd>}m) do |label, command|
     extras << { label: label.strip, job: command.strip }
   end
   extras
@@ -56,7 +54,7 @@ def parse_timeline(html)
   timeline
 end
 
-puts "Comparing:"
+puts 'Comparing:'
 puts "  OSS cronv : #{oss_path}"
 puts "  cronv-rb  : #{rb_path}"
 puts
@@ -71,7 +69,7 @@ oss_extras = parse_extras(oss_html)
 rb_extras  = parse_extras(rb_html)
 
 if oss_extras != rb_extras
-  errors << "Extra section mismatch:"
+  errors << 'Extra section mismatch:'
   errors << "  OSS cronv : #{oss_extras.inspect}"
   errors << "  cronv-rb  : #{rb_extras.inspect}"
 else
@@ -86,18 +84,16 @@ only_in_oss_all = oss_all_jobs - rb_all_jobs
 only_in_rb_all  = rb_all_jobs  - oss_all_jobs
 
 if only_in_oss_all.any?
-  errors << "Jobs present in OSS cronv but missing from cronv-rb:"
+  errors << 'Jobs present in OSS cronv but missing from cronv-rb:'
   only_in_oss_all.sort.each { |j| errors << "  - #{j}" }
 end
 
 if only_in_rb_all.any?
-  errors << "Jobs present in cronv-rb but missing from OSS cronv:"
+  errors << 'Jobs present in cronv-rb but missing from OSS cronv:'
   only_in_rb_all.sort.each { |j| errors << "  - #{j}" }
 end
 
-if only_in_oss_all.empty? && only_in_rb_all.empty?
-  puts "[OK] Job names match (#{oss_all_jobs.size} jobs)"
-end
+puts "[OK] Job names match (#{oss_all_jobs.size} jobs)" if only_in_oss_all.empty? && only_in_rb_all.empty?
 
 # ── 3. Compare time ranges for jobs that have executions ─────────────────────
 oss_timeline = parse_timeline(oss_html)
@@ -128,17 +124,17 @@ end
 if range_errors.empty?
   puts "[OK] Time ranges match for all #{common_jobs.size} jobs"
 else
-  errors << "Time range mismatches:"
+  errors << 'Time range mismatches:'
   errors.concat(range_errors)
 end
 
 # ── Result ────────────────────────────────────────────────────────────────────
 puts
 if errors.empty?
-  puts "All checks passed. cronv-rb output matches OSS cronv."
+  puts 'All checks passed. cronv-rb output matches OSS cronv.'
   exit 0
 else
-  puts "FAILED: Differences found between OSS cronv and cronv-rb:"
+  puts 'FAILED: Differences found between OSS cronv and cronv-rb:'
   errors.each { |e| puts e }
   exit 1
 end
