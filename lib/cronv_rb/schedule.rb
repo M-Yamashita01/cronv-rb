@@ -17,8 +17,6 @@ module CronvRb
     # rubocop:enable Metrics/ParameterLists
 
     def to_crontab
-      return @schedule_alias if @schedule_alias
-
       "#{@minutes} #{@hour} #{@day_of_month} #{@month} #{@day_of_week} #{@year}"
     end
   end
