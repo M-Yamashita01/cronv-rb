@@ -24,7 +24,7 @@ jobs:
           go-version: 'stable'
 
       - name: Install OSS cronv
-        run: go install github.com/takumakanari/cronv/cronv@0.4.5
+        run: go install github.com/takumakanari/cronv/cronv@latest
 
       - name: Generate OSS cronv HTML output
         run: |
