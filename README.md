@@ -1,8 +1,6 @@
-# Cronv::Rb
+# cronv-rb
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cronv/rb`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A Ruby implementation of [cronv](https://github.com/takumakanari/cronv) (originally written in Go) that visualizes cron schedules from crontab as an interactive HTML timeline.
 
 ## Installation
 
@@ -14,7 +12,7 @@ gem 'cronv-rb'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
@@ -22,17 +20,52 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Pipe your crontab into `cronv` to generate an HTML timeline:
+
+```sh
+crontab -l | bundle exec ruby exe/cronv -o crontab.html
+```
+
+### Options
+
+| Option | Description | Default |
+|---|---|---|
+| `-o`, `--output PATH` | Path to output HTML file | `./crontab.html` |
+| `-d`, `--duration DURATION` | Duration to visualize (`1d` / `6h` / `30m`) | `6h` |
+| `--from-date DATE` | Start date (`YYYY/MM/DD`) | Current date (UTC) |
+| `--from-time TIME` | Start time (`HH:MM`) | Current time (UTC) |
+| `-t`, `--title TITLE` | Title label of output | `Cron Tasks` |
+| `-w`, `--width WIDTH` | Table width of output | `100` |
+
+### Examples
+
+```sh
+# Visualize the next 24 hours starting from a specific date
+crontab -l | bundle exec ruby exe/cronv \
+  -o crontab.html \
+  --from-date 2025/01/01 \
+  --from-time 00:00 \
+  -d 1d
+
+# Visualize the next 30 minutes with a custom title
+crontab -l | bundle exec ruby exe/cronv \
+  -o crontab.html \
+  -d 30m \
+  -t "My Cron Jobs"
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+bundle install
+bundle exec rspec
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cronv-rb.
+Bug reports and pull requests are welcome on GitHub at https://github.com/M-Yamashita01/cronv-rb.
 
 ## License
 
