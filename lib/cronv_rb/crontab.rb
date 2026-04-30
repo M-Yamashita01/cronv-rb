@@ -26,7 +26,7 @@ module CronvRb
       # rubocop:disable Style/OptionalArguments
       # return [crontab, extra]
       def parse(context = {}, line)
-        parts = line.split(' ')
+        parts = line.split
         schedule = nil
         job = []
 

@@ -81,6 +81,22 @@ RSpec.describe CronvRb::Crontab do
       end
     end
 
+    context 'when the line uses tab separators' do
+      let(:line) { "01\t04\t1\t2\t3\t/usr/bin/somecommand" }
+
+      it 'should return a Crontab object' do
+        crontab, extra = described_class.parse(line)
+        expect(crontab).to be_a(CronvRb::Crontab)
+        expect(crontab.schedule.minutes).to eq('01')
+        expect(crontab.schedule.hour).to eq('04')
+        expect(crontab.schedule.day_of_month).to eq('1')
+        expect(crontab.schedule.month).to eq('2')
+        expect(crontab.schedule.day_of_week).to eq('3')
+        expect(crontab.job).to eq('/usr/bin/somecommand')
+        expect(extra).to be_nil
+      end
+    end
+
     context 'when the line is has @hourly label' do
       let(:line) { '@hourly /usr/bin/somecommand' }
 
