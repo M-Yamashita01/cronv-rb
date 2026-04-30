@@ -56,5 +56,26 @@ RSpec.describe CronvRb::Visualizer do
         expect(visualizer.records.size).to eq(0)
       end
     end
+
+    context 'when the line is an invalid crontab entry' do
+      it 'should skip the line without crashing' do
+        option = CronvRb::Option.new_cronv_option(now)
+        visualizer = CronvRb::Visualizer.new_visualizer(option)
+        result = visualizer.add('MAILTO=admin@example.com')
+        expect(result).to eq([false, nil])
+        expect(visualizer.records.size).to eq(0)
+        expect(visualizer.extras.size).to eq(0)
+      end
+    end
+
+    context 'when the line has too few fields' do
+      it 'should skip the line without crashing' do
+        option = CronvRb::Option.new_cronv_option(now)
+        visualizer = CronvRb::Visualizer.new_visualizer(option)
+        result = visualizer.add('invalid line')
+        expect(result).to eq([false, nil])
+        expect(visualizer.records.size).to eq(0)
+      end
+    end
   end
 end
