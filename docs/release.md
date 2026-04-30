@@ -34,40 +34,7 @@ tagpr keeps `lib/cronv_rb/version.rb` in sync with the git tag.
 
 ## Configuration
 
-tagpr is configured via `.tagpr` (gitconfig format) in the repository root:
-
-```ini
-[tagpr]
-    releaseBranch = main
-    versionFile = lib/cronv_rb/version.rb
-    vPrefix = true
-    release = true
-```
-
-## Workflow file
-
-The GitHub Actions workflow (`.github/workflows/tagpr.yml`) runs tagpr on every push to `main`:
-
-```yaml
-name: tagpr
-on:
-  push:
-    branches: ["main"]
-jobs:
-  tagpr:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: Songmu/tagpr@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+tagpr is configured via `.tagpr` (gitconfig format) in the repository root. See `.tagpr` for the current settings.
 
 ## Prerequisites
 
