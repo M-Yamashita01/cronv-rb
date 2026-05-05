@@ -9,6 +9,6 @@ gemspec
 
 gem 'fugit', '~> 1.2'
 gem 'logger'
-gem 'rspec', '~> 3.0'
+gem 'rspec', '~> 3.13'
 gem 'rubocop'
 gem 'rubocop-rspec'
