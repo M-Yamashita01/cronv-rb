@@ -85,9 +85,14 @@ module CronvRb
     # rubocop:enable Style/OptionalArguments
 
     def running_every_minutes?(schedule)
-      return true if schedule.minutes == '*' || schedule.minutes == '*/1'
-
-      false
+      fields = schedule.to_crontab.split
+      fields.each_with_index.all? do |field, i|
+        if i.zero?
+          %w[* */1].include?(field)
+        else
+          field == '*'
+        end
+      end
     end
   end
 end

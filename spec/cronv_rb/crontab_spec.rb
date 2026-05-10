@@ -29,6 +29,14 @@ RSpec.describe CronvRb::Crontab do
         expect(crontab.running_every_minutes?(schedule)).to be false
       end
     end
+
+    context 'when only minutes is * but other fields are not' do
+      let(:schedule) { CronvRb::Schedule.new(minutes: '*', hour: '0', day_of_month: '*', month: '*', day_of_week: '*', year: nil, schedule_alias: nil) }
+
+      it 'should return false' do
+        expect(crontab.running_every_minutes?(schedule)).to be false
+      end
+    end
   end
 
   describe '.parse' do
