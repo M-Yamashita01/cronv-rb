@@ -24,7 +24,8 @@ module CronvRb
 
       begin
         record, extra = Record.new_record(line: trimmed, start_time: @time_from, duration_minutes: @duration_minutes)
-      rescue ArgumentError
+      rescue ArgumentError => e
+        warn "[WARN] Skipping invalid crontab line: '#{trimmed}' (#{e.message})"
         return [false, nil]
       end
 
