@@ -14,6 +14,10 @@ module CronvRb
       opt.on('--from-time TIME', "start time in the format '#{Option::OPT_TIME_FORMAT}' to visualize") { |v| option.from_time = v }
       opt.on('-t', '--title TITLE', 'title/label of output') { |v| option.title = v }
       opt.on('-w', '--width WIDTH', 'Table width of output') { |v| option.width = v.to_i }
+      opt.on('-v', '--version', 'Show version') do
+        puts "cronv-rb #{VERSION}"
+        exit
+      end
     end.parse!
 
     visualizer = Visualizer.new_visualizer(option)
