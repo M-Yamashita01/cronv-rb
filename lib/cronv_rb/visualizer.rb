@@ -22,7 +22,12 @@ module CronvRb
 
       return [false, nil] if trimmed.empty? || trimmed.start_with?('#')
 
-      record, extra = Record.new_record(line: trimmed, start_time: @time_from, duration_minutes: @duration_minutes)
+      begin
+        record, extra = Record.new_record(line: trimmed, start_time: @time_from, duration_minutes: @duration_minutes)
+      rescue ArgumentError => e
+        warn "[WARN] Skipping invalid crontab line: '#{trimmed}' (#{e.message})"
+        return [false, nil]
+      end
 
       @records.push(record) unless record.nil?
       @extras.push(extra) unless extra.nil?
