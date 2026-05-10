@@ -87,8 +87,8 @@ module CronvRb
     def running_every_minutes?(schedule)
       fields = schedule.to_crontab.split
       fields.each_with_index.all? do |field, i|
-        if i == 0
-          field == '*' || field == '*/1'
+        if i.zero?
+          %w[* */1].include?(field)
         else
           field == '*'
         end
