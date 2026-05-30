@@ -11,7 +11,7 @@ GEM
     diff-lcs (1.5.1)
     et-orbi (1.4.0)
       tzinfo
-    fugit (1.12.1)
+    fugit (1.12.2)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
     json (2.19.5)
