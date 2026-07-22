@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -29,7 +29,7 @@ jobs:
           bundler-cache: true
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version: 'stable'
 
@@ -58,7 +58,7 @@ jobs:
         run: bundle exec ruby scripts/compare_cronv_outputs.rb oss_cronv.html cronvrb.html
 
       - name: Upload HTML outputs as artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: cronv-html-outputs
