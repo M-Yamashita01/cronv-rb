@@ -9,3 +9,7 @@
 
 # rspec failure tracking
 .rspec_status
+
+# Gemfile.lock is not tracked for this gem (library): bundler resolves
+# fresh, and release bumps no longer need to re-sync the lock.
+/Gemfile.lock
