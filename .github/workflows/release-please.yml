@@ -1,0 +1,123 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Mondays 00:00 UTC (09:00 JST): auto-ship the week's patch release.
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  # Weekly (schedule) or on manual dispatch: if the open Release PR is a
+  # patch-only bump, merge it automatically. feat (minor) and breaking (major)
+  # Release PRs are left open for a human to merge.
+  auto-merge-patch:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Merge patch-only Release PR
+        run: |
+          set -euo pipefail
+
+          pr=$(gh pr list --state open --label "autorelease: pending" \
+                 --json number,title,mergeStateStatus --limit 1)
+          num=$(jq -r '.[0].number // empty' <<<"$pr")
+          if [ -z "$num" ]; then
+            echo "No open Release PR; nothing to do."
+            exit 0
+          fi
+
+          # Release PR title looks like: chore(main): release 0.1.1
+          title=$(jq -r '.[0].title' <<<"$pr")
+          new=$(sed -nE 's/.*release ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' <<<"$title")
+          if [ -z "$new" ]; then
+            echo "Could not parse a version from the Release PR title: $title"
+            exit 0
+          fi
+
+          cur=$(jq -r '.["."]' .release-please-manifest.json)
+          echo "current=$cur proposed=$new"
+
+          IFS=. read -r cmaj cmin cpat <<<"$cur"
+          IFS=. read -r nmaj nmin npat <<<"$new"
+
+          if [ "$nmaj" != "$cmaj" ] || [ "$nmin" != "$cmin" ] || [ "$npat" -le "$cpat" ]; then
+            echo "Not a patch bump ($cur -> $new); leaving PR #$num for manual review."
+            exit 0
+          fi
+
+          state=$(jq -r '.[0].mergeStateStatus' <<<"$pr")
+          case "$state" in
+            CLEAN|UNSTABLE)
+              echo "Patch bump ($cur -> $new); merging PR #$num (mergeState=$state)."
+              gh pr merge "$num" --merge
+              ;;
+            *)
+              echo "PR #$num is a patch bump but not mergeable yet (mergeState=$state); skipping."
+              ;;
+          esac
+
+  # Maintains the Release PR from Conventional Commits on main. When a Release
+  # PR has been merged (by a human for minor/major, or by auto-merge-patch for
+  # patch), this creates the tag and the GitHub Release.
+  # Runs on push, and after auto-merge-patch on schedule/dispatch.
+  release-please:
+    needs: [auto-merge-patch]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # Runs only when a release was created. Builds the gem and publishes it to
+  # RubyGems via Trusted Publishing (OIDC); no stored API key is required. The
+  # tag is already created by release-please, so this does not use
+  # `rake release` (which would try to re-create the tag).
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
+        with:
+          bundler-cache: true
+
+      - uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
+
+      - name: Build and push gem to RubyGems
+        run: |
+          set -euo pipefail
+          mkdir -p pkg
+          gem build cronv-rb.gemspec --output "pkg/cronv-rb.gem"
+          gem push "pkg/cronv-rb.gem"
+
+      - name: Wait for the gem to be available on RubyGems
+        run: gem exec rubygems-await "pkg/cronv-rb.gem"
