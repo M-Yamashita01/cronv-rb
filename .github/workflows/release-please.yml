@@ -8,6 +8,11 @@ on:
     # Mondays 00:00 UTC (09:00 JST): auto-ship the week's patch release.
     - cron: "0 0 * * 1"
   workflow_dispatch:
+    inputs:
+      force_publish:
+        description: "Publish the current main version to RubyGems, even without a new release (escape hatch / backfill)."
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -81,8 +86,10 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
+      # Manifest mode (config-file + manifest-file) exposes `releases_created`
+      # (plural); the singular `release_created` is only set in non-manifest
+      # single-package mode and is empty here.
+      releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: release
@@ -90,21 +97,23 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  # Runs only when a release was created. Builds the gem and publishes it to
-  # RubyGems via Trusted Publishing (OIDC); no stored API key is required. The
-  # tag is already created by release-please, so this does not use
-  # `rake release` (which would try to re-create the tag).
+  # Builds the gem and publishes it to RubyGems via Trusted Publishing (OIDC);
+  # no stored API key is required. Runs when release-please creates a release,
+  # or on a manual dispatch with force_publish (escape hatch / backfill). After
+  # a release, main HEAD is the release commit, so building from the checked-out
+  # ref produces the released version; the tag is already created by
+  # release-please, so this does not use `rake release` (which would re-tag).
   publish:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: >-
+      ${{ needs.release-please.outputs.releases_created == 'true' ||
+          (github.event_name == 'workflow_dispatch' && inputs.force_publish) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
 
       - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:

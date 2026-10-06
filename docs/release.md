@@ -80,9 +80,14 @@ Whichever way it is merged, it:
 
 ### 4. The gem is published automatically
 
-The `publish` job in the same workflow runs only when a release was created. It
-builds the gem and pushes it to [RubyGems](https://rubygems.org/gems/cronv-rb)
-using Trusted Publishing (OIDC), so no API key is stored in the repository.
+The `publish` job in the same workflow runs when a release was created
+(`releases_created == 'true'`). It builds the gem and pushes it to
+[RubyGems](https://rubygems.org/gems/cronv-rb) using Trusted Publishing (OIDC),
+so no API key is stored in the repository.
+
+If a publish needs to be re-run or a version needs to be backfilled, trigger the
+workflow manually from the Actions tab (Run workflow) with `force_publish`
+checked. This builds and pushes whatever version is currently on `main`.
 
 ### 5. Verify the release
 
