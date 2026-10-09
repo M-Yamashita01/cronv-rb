@@ -37,6 +37,7 @@
     {
       "matchUpdateTypes": ["major"],
       "automerge": false,
+      "reviewers": ["M-Yamashita01"],
       "labels": ["dependencies", "major-update"]
     }
   ]
