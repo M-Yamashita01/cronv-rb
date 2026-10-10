@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/M-Yamashita01/cronv-rb/compare/v0.2.0...v0.3.0) (2026-10-10)
+
+
+### Features
+
+* add Renovate configuration for automated dependency updates ([e5fa8a5](https://github.com/M-Yamashita01/cronv-rb/commit/e5fa8a526ac262d16f03c36def2f6be5a985a648))
+
+
+### Bug Fixes
+
+* gate RubyGems publish on manifest-mode releases_created output ([bdad7f8](https://github.com/M-Yamashita01/cronv-rb/commit/bdad7f88140959fe72e691e6f146be670b205256))
+* gate RubyGems publish on manifest-mode releases_created output ([8c7c5ac](https://github.com/M-Yamashita01/cronv-rb/commit/8c7c5acd06ae9c8a256598f0a5af964f30b6ed24))
+* loosen bundler dev dependency to &gt;= 2.5 for Bundler 4 ([ce315d8](https://github.com/M-Yamashita01/cronv-rb/commit/ce315d814340fdc3efc65dec3536b3709d5a5b82))
+* stop tracking Gemfile.lock so releases do not break CI ([7c04564](https://github.com/M-Yamashita01/cronv-rb/commit/7c0456460193dc4ba1ebd833d94c813e0d1d10d7))
+
 ## [0.2.0](https://github.com/M-Yamashita01/cronv-rb/compare/v0.1.0...v0.2.0) (2026-10-06)
 
 
