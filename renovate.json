@@ -39,6 +39,12 @@
       "automerge": false,
       "reviewers": ["M-Yamashita01"],
       "labels": ["dependencies", "major-update"]
+    },
+    {
+      "description": "Digest/pinDigest updates (e.g. a GitHub Action SHA) are not auto-merged: SHA pinning is a supply-chain defence and CI does not vet action safety. Request a review so a human merges them and is notified, instead of the PR sitting open unseen.",
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "automerge": false,
+      "reviewers": ["M-Yamashita01"]
     }
   ]
 }
