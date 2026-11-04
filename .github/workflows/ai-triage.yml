@@ -30,7 +30,6 @@ jobs:
           mkdir -p /tmp/scan
           sudo gem install bundler-audit --no-document
           bundle-audit check --update > /tmp/scan/bundler-audit.txt 2>&1 || true
-          
 
       - name: AI triage
         uses: anthropics/claude-code-action@v1
